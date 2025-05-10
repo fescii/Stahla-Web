@@ -1,14 +1,9 @@
-export default class UrlPopup extends HTMLElement {
+export default class DeletePopup extends HTMLElement {
   constructor() {
-
-    // We are not even going to touch this.
     super();
-
-    // let's create our shadow root
+    this.url = this.getAttribute('url');
     this.shadowObj = this.attachShadow({mode: 'open'});
-
     this.render();
-
   }
 
   render() {
@@ -17,15 +12,8 @@ export default class UrlPopup extends HTMLElement {
 
   connectedCallback() {
     this.disableScroll();
-
-    // Select the close button & overlay
-    const overlay = this.shadowObj.querySelector('.overlay');
     const btns = this.shadowObj.querySelectorAll('.cancel-btn');
-
-    // Close the modal
-    if (overlay && btns) {
-      this.closePopup(overlay, btns);
-    }
+    if (btns) this.closePopup(btns);
   }
 
   disconnectedCallback() {
@@ -49,12 +37,7 @@ export default class UrlPopup extends HTMLElement {
     window.onscroll = function() {};
   }
 
-  closePopup = (overlay, btns) => {
-    overlay.addEventListener('click', e => {
-      e.preventDefault();
-      this.remove();
-    });
-
+  closePopup = (btns) => {
     btns.forEach(btn => {
       btn.addEventListener('click', e => {
         e.preventDefault();
@@ -74,16 +57,19 @@ export default class UrlPopup extends HTMLElement {
   }
 
   getWelcome() {
-    const url = this.getAttribute('url');
-    let max = url.length > 50 ? url.substring(0, 50) + '...' : url;
+    const items = this.innerHTML;
+    // Trim items to 200 characters
+    const trimmedItems = items.length > 120 ? items.substring(0, 120) + '...' : items;
     return /*html*/`
       <div class="welcome">
-				<p>You are about to leave the application and visit an external website.</p> 
-        <p> We are not responsible for the content of the external website, click continue to visit below address.</p>
-        <span class="url">${max}</span>
+        <div class="head">
+				  <h2 class="consent">You are about to delete;</h2>
+        </div>
+        <p>The following items will be deleted from your SDR AI Platform.<br/> This action cannot be undone.</p>
+        <span class="items">${trimmedItems}</span>
         <div class="actions">
           <button class="action cancel-btn">Cancel</button>
-          <a noopenner="true" blank="true" target="_blank" href="${url}" class="action">Continue</a>
+          <button class="action">Continue</button>
         </div>
 			</div>
     `
@@ -123,24 +109,25 @@ export default class UrlPopup extends HTMLElement {
           left: 0;
           height: 100%;
           width: 100%;
-          background-color: var(--modal-background);
+          background: var(--modal-background);
           backdrop-filter: blur(3px);
           -webkit-backdrop-filter: blur(3px);
         }
 
         #content {
           z-index: 1;
-          background-color: var(--background);
+          border: var(--border);
+          background: var(--background);
           padding: 20px 10px 20px;
           display: flex;
           flex-flow: column;
           align-items: center;
           justify-content: center;
           gap: 0;
-          width: 700px;
+          width: 550px;
           max-height: 90%;
           height: max-content;
-          border-radius: 25px;
+          border-radius: 20px;
           position: relative;
         }
   
@@ -150,17 +137,25 @@ export default class UrlPopup extends HTMLElement {
           flex-flow: column;
           align-items: center;
           justify-content: center;
-          row-gap: 0;
+          gap: 0;
         }
 
-        .welcome > h2 {
+        .welcome > .head {
+          display: flex;
+          flex-flow: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          gap: 0;
+          padding: 0 0 10px;
+        }
+
+        .welcome > .head > h2.consent {
           width: 100%;
           font-size: 1.5rem;
           font-weight: 600;
-          margin: 0 0 10px;
-          padding: 10px 10px;
-          background-color: var(--gray-background);
-          text-align: center;
+          margin: 0;
+          padding: 0;
           border-radius: 12px;
           font-family: var(--font-main), sans-serif;
           color: var(--text-color);
@@ -168,47 +163,20 @@ export default class UrlPopup extends HTMLElement {
           position: relative;
         }
 
-        .welcome > h2 > span.control {
-          padding: 0;
-          cursor: pointer;
-          display: flex;
-          flex-flow: column;
-          gap: 0px;
-          justify-content: center;
-          position: absolute;
-          top: 50%;
-          left: 10px;
-          transform: translateY(-50%);
-        }
-
-        .welcome > h2 > span.control svg {
-          width: 20px;
-          height: 20px;
-          color: var(--text-color);
-        }
-
-        .welcome > h2 > span.control svg:hover{
-          color: var(--error-color);
-        }
-
         .welcome  p {
           margin: 10px 0 0;
           width: 100%;
-          text-align: center;
           font-family: var(--font-main), sans-serif;
           color: var(--text-color);
           line-height: 1.4;
           font-size: 1rem;
         }
 
-        .welcome span.url {
+        .welcome span.items {
           display: flex;
           width: 100%;
           padding: 0;
-          text-align: center;
-          align-items: center;
-          justify-content: center;
-          margin: 10px 0 5px;
+          margin: 15px 0;
           font-family: var(--font-read), sans-serif;
           font-size: 0.9rem;
           font-weight: 400;
@@ -222,15 +190,15 @@ export default class UrlPopup extends HTMLElement {
           width: 100%;
           flex-flow: row;
           align-items: center;
-          justify-content: center;
-          gap: 20px;
-          margin: 10px 0 0;
+          justify-content: end;
+          gap: 35px;
+          margin: 20px 0 0;
         }
         
         .welcome > .actions > .action {
           border: none;
-          background: var(--gray-background);
-          color: var(--text-color);
+          background: var(--error-background);
+          color: var(--error-color);
           font-family: var(--font-main), sans-serif;
           text-decoration: none;
           font-size: 1rem;
@@ -241,84 +209,22 @@ export default class UrlPopup extends HTMLElement {
           align-items: center;
           text-transform: capitalize;
           justify-content: center;
-          padding: 7px 15px 7px;
+          padding: 12px 20px;
           min-width: 100px;
-          width: 100px;
+          width: 150px;
           position: relative;
-          border-radius: 12px;
-          -webkit-border-radius: 12px;
-          -moz-border-radius: 12px;
+          border-radius: 15px;
+          -webkit-border-radius: 15px;
+          -moz-border-radius: 15px;
         }
 
         .welcome > .actions > .action.cancel-btn {
-          border: var(--action-border);
-          background: none;
-          background-color: none;
+          border: none;
+          /* background: none;
+          background-color: none; */
+          background: var(--gray-background);
           color: var(--text-color);
-          padding: 6px 15px 6px;
-        }
-
-        @media screen and ( max-width: 850px ){
-          #content {
-            width: 90%;
-          }
-        }
-        @media screen and ( max-width: 600px ){
-          :host {
-            border: none;
-            background-color: var(--modal-background);
-            padding: 0px;
-            justify-self: end;
-            display: flex;
-            flex-flow: column;
-            align-items: center;
-            justify-content: end;
-            gap: 10px;
-            z-index: 20;
-            position: fixed;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            left: 0;
-          }
-
-          #content {
-            box-sizing: border-box !important;
-            padding: 10px 0 5px;
-            margin: 0;
-            width: 100%;
-            max-width: 100%;
-            max-height: 90%;
-            min-height: max-content;
-            border-radius: 0px;
-            border-top: var(--border);
-            border-top-right-radius: 15px;
-            border-top-left-radius: 15px;
-          }
-
-          .welcome {
-            width: 100%;
-            padding: 5px 15px;
-          }
-
-          .welcome  p {
-            margin: 5px 0 0;
-            font-family: var(--font-main), sans-serif;
-            color: var(--text-color);
-            line-height: 1.4;
-            font-size: 1rem;
-          }
-
-          .welcome > .actions {
-            margin: 15px 0;
-            width: 100%;
-            gap: 35px;
-          }
-
-          .welcome > h2 > span.control,
-          .welcome > .actions > .action {
-            cursor: default !important;
-          }
+          padding: 12px 20px;
         }
       </style>
     `;

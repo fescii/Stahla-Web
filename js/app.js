@@ -308,8 +308,11 @@ export default class AppMain extends HTMLElement {
     const mql = window.matchMedia('(max-width: 660px)');
     if (mql.matches) {
       return /* html */`
-        <section class="flow">
-          ${this.getLoader()}
+        <section class="mobile">
+          <h1 class="mobile-title">Stahla SDR AI & Pricing</h1>
+          <p class="mobile-description">Stahla is a service that provides a wide range of features and functionalities to help you manage your SDR AI & Pricing application.</p>
+          <p class="mobile-warning">Mobile version is not available yet. Please use the desktop or tablet version for the best experience.</p>
+          ${this.getFooter()}
         </section>
       `;
     }
@@ -354,7 +357,7 @@ export default class AppMain extends HTMLElement {
         <li class="logo">
           <span class="tooltip">
             <span class="arrow"></span>
-            <span class="text">Stahla</span>
+            <span class="text">SDR AI</span>
           </span>
         </li>
       </ul>
@@ -611,15 +614,9 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
-  getChatApp = () => {
-    return /* html */`
-      <chat-app all="628" unread="3" requests="2"></chat-app>
-    `;
-  }
-
   getShots = () => {
     return /* html */`
-      <shots-videos api="/shots/fyp" name="For You" type="fyp"></shots-videos>
+      <app-home api="/shots/fyp" name="For You" type="fyp"></app-home>
     `;
   }
 
@@ -669,6 +666,12 @@ export default class AppMain extends HTMLElement {
         <div id="loader" class="loader"></div>
       </div>
     `;
+  }
+
+  getDelete = (items, url) => {
+    return /*html*/`
+      <delete-popup url="${url}">${items}</delete-popup>
+    `
   }
 
   getStyles() {
@@ -1058,6 +1061,52 @@ export default class AppMain extends HTMLElement {
           padding: 0;
         }
 
+        /* Mobie section unavailable */
+        section.mobile {
+          width: 100%;
+          height: 100dvh;
+          display: flex;
+          flex-flow: column;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+          padding: 0 10px;
+        }
+
+        section.mobile > h1.mobile-title {
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          text-align: center;
+          font-family: var(--font-text), sans-serif;
+          font-size: 1.5rem;
+          font-weight: 600;
+          line-height: 1.5;
+          color: var(--accent-color);
+        }
+
+        section.mobile > p.mobile-description {
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          font-family: var(--font-main), sans-serif;
+          font-size: 1rem;
+          text-align: center;
+          font-weight: 400;
+          color: var(--text-color);
+        }
+
+        section.mobile > p.mobile-warning {
+          width: 100%;
+          padding: 10px 0;
+          margin: 0;
+          text-align: center;
+          font-family: var(--font-read), sans-serif;
+          font-size: 0.9rem;
+          font-weight: 400;
+          color: var(--alt-color);
+        }
+
         footer.footer {
           border-top: var(--border);
           padding: 13px 0;
@@ -1101,6 +1150,22 @@ export default class AppMain extends HTMLElement {
           justify-content: center;
           align-items: center;
           gap: 10px;
+        }
+
+        section.mobile > footer.footer {
+          width: 100%;
+          margin: 30px 0 0 0;
+          display: flex;
+          flex-flow: column;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+        }
+
+        section.mobile > footer.footer > ul.links {
+          padding: 10px 0;
+          flex-flow: row wrap;
+          column-gap: 10px;
         }
 
         footer.footer > ul.links > li {

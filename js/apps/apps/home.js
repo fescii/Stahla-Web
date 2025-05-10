@@ -1,10 +1,8 @@
 export default class AppHome extends HTMLElement {
   constructor() {
-    // We are not even going to touch this.
     super();
     this.setTitle();
     this.app = window.app;
-    // let's create our shadow root
     this.shadowObj = this.attachShadow({ mode: "open" });
     this.mql = window.matchMedia('(max-width: 700px)');
     this.active_tab = null;
@@ -13,8 +11,7 @@ export default class AppHome extends HTMLElement {
   }
 
   setTitle = () => {
-    // update title of the document
-    document.title = 'Home | Explore, create and contribute to ideas that can change the world';
+    document.title = '0verview | Stahla SDR AI & Pricing Dashboard';
   }
 
   render() {
@@ -382,6 +379,8 @@ export default class AppHome extends HTMLElement {
           display: flex;
           justify-content: space-between;
           gap: 30px;
+          width: 100%;
+          max-width: 100%;
         }
 
         .feeds {
@@ -389,6 +388,8 @@ export default class AppHome extends HTMLElement {
           flex-flow: column;
           gap: 0;
           width: calc(55% - 15px);
+          min-width: calc(55% - 15px);
+          max-width: calc(55% - 15px);
         }
 
         .content-container {

@@ -17,7 +17,11 @@
     import AppMain from './js/app.js'
     customElements.define('app-main', AppMain)
     const node = document.getElementById('root')
-    node.innerHTML = `<app-main></app-main>`
+    node.innerHTML = /* HTML */`
+      <app-main>
+        <app-home api="/shots/fyp" name="For You" type="fyp"></app-home>
+      </app-main>
+    `
   </script>
 </head>
 <body>
