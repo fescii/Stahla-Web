@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- Add CORS headers via meta tags -->
+  <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+  <meta http-equiv="Cross-Origin-Resource-Policy" content="cross-origin">
+  <meta name="theme-color" content="#4285f4" />
+  <link rel="stylesheet" href="./css/theme.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/res.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+  <script type="module">
+    import AppMain from './js/app.js'
+    customElements.define('app-main', AppMain)
+    const node = document.getElementById('root')
+    node.innerHTML = `<app-main></app-main>`
+  </script>
+</head>
+<body>
+  <div class="root" id="root"></div> 
+</body>
+</html>
